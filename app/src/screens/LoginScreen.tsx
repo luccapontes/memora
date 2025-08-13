@@ -9,6 +9,8 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Dimensions,
+  StatusBar,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,6 +18,7 @@ import * as yup from 'yup';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/Button';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface LoginFormData {
   email: string;
@@ -30,6 +33,8 @@ const schema = yup.object({
 interface LoginScreenProps {
   navigation: any;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const { login } = useAuth();
@@ -65,134 +70,205 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Ionicons name="school" size={60} color="#4A90E2" />
-            <Text style={styles.logoText}>Memora</Text>
+    <LinearGradient
+      colors={['#667eea', '#764ba2']}
+      style={styles.gradientContainer}
+    >
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <View style={styles.logoBackground}>
+                <Ionicons name="school" size={50} color="white" />
+              </View>
+              <Text style={styles.logoText}>Memora</Text>
+              <Text style={styles.tagline}>Aprenda de forma inteligente</Text>
+            </View>
           </View>
-          <Text style={styles.subtitle}>Faça login para continuar</Text>
-        </View>
 
-        {/* Form */}
-        <View style={styles.form}>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Ionicons name="mail-outline" size={20} color="#666" style={styles.inputIcon} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="E-mail"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                </View>
-                {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
+          {/* Form Card */}
+          <View style={styles.formCard}>
+            <Text style={styles.formTitle}>Bem-vindo de volta!</Text>
+            <Text style={styles.formSubtitle}>Faça login para continuar sua jornada</Text>
+            
+            <View style={styles.form}>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="mail-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="E-mail"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                    </View>
+                    {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="lock-closed-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Senha"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        secureTextEntry={!showPassword}
+                        autoCapitalize="none"
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.eyeIcon}
+                      >
+                        <Ionicons
+                          name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                          size={22}
+                          color="#667eea"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Button
+                title={isLoading ? 'Entrando...' : 'Entrar'}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isLoading}
+                style={styles.loginButton}
+              />
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Register')}
+                style={styles.registerLink}
+              >
+                <Text style={styles.registerText}>
+                  Não tem uma conta? <Text style={styles.registerTextBold}>Cadastre-se</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Demo Credentials */}
+          <View style={styles.demoContainer}>
+            <View style={styles.demoHeader}>
+              <Ionicons name="information-circle-outline" size={20} color="#667eea" />
+              <Text style={styles.demoTitle}>Credenciais de Demonstração</Text>
+            </View>
+            <View style={styles.demoContent}>
+              <View style={styles.demoRow}>
+                <Ionicons name="mail" size={16} color="#666" />
+                <Text style={styles.demoText}>sofia@escola.com</Text>
               </View>
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Senha"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.eyeIcon}
-                  >
-                    <Ionicons
-                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                      size={20}
-                      color="#666"
-                    />
-                  </TouchableOpacity>
-                </View>
-                {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+              <View style={styles.demoRow}>
+                <Ionicons name="key" size={16} color="#666" />
+                <Text style={styles.demoText}>123456</Text>
               </View>
-            )}
-          />
-
-          <Button
-            title={isLoading ? 'Entrando...' : 'Entrar'}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isLoading}
-            style={styles.loginButton}
-          />
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
-            style={styles.registerLink}
-          >
-            <Text style={styles.registerText}>
-              Não tem uma conta? <Text style={styles.registerTextBold}>Cadastre-se</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Demo Credentials */}
-        <View style={styles.demoContainer}>
-          <Text style={styles.demoTitle}>Credenciais de Demonstração:</Text>
-          <Text style={styles.demoText}>E-mail: sofia@escola.com</Text>
-          <Text style={styles.demoText}>Senha: 123456</Text>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   keyboardView: {
     flex: 1,
   },
   header: {
     alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 40,
+    paddingTop: height * 0.08,
+    paddingBottom: height * 0.05,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+  },
+  logoBackground: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   logoText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#4A90E2',
-    marginTop: 10,
+    color: 'white',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
-  subtitle: {
+  tagline: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  formCard: {
+    backgroundColor: 'white',
+    marginHorizontal: 24,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 15,
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  formSubtitle: {
     fontSize: 16,
     color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   form: {
-    paddingHorizontal: 24,
     flex: 1,
   },
   inputContainer: {
@@ -201,60 +277,87 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: 16,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#000',
+    color: '#333',
+    fontWeight: '500',
   },
   eyeIcon: {
     padding: 4,
   },
   errorText: {
     color: '#FF6B6B',
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 13,
+    marginTop: 6,
     marginLeft: 4,
+    fontWeight: '500',
   },
   loginButton: {
-    marginTop: 20,
+    marginTop: 24,
     marginBottom: 20,
   },
   registerLink: {
     alignItems: 'center',
+    paddingVertical: 8,
   },
   registerText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#666',
   },
   registerTextBold: {
-    color: '#4A90E2',
+    color: '#667eea',
     fontWeight: 'bold',
   },
   demoContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-    backgroundColor: '#F8F9FA',
-    padding: 16,
-    margin: 24,
-    borderRadius: 12,
+    marginHorizontal: 24,
+    marginTop: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  demoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   demoTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#666',
-    marginBottom: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginLeft: 8,
+  },
+  demoContent: {
+    gap: 8,
+  },
+  demoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   demoText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 2,
+    fontWeight: '500',
   },
 }); 

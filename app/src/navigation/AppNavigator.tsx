@@ -95,13 +95,30 @@ const AppNavigator = () => {
 
   console.log('AppNavigator - isAuthenticated:', isAuthenticated, 'loading:', loading);
 
+  // Configuração para sincronizar com URLs do navegador
+  const linking = {
+    prefixes: ['http://localhost:19006', 'http://localhost:3000'],
+    config: {
+      screens: {
+        Onboarding: '',
+        Login: 'login',
+        Register: 'register',
+        MainTabs: 'main',
+        Notifications: 'notifications',
+        UserProfile: 'profile/user',
+        GeneralAnalysis: 'analysis',
+        StudiedContent: 'content',
+      },
+    },
+  };
+
   if (loading) {
     console.log('AppNavigator - Loading...');
     return null;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         initialRouteName={isAuthenticated ? "MainTabs" : "Onboarding"}
         screenOptions={{
