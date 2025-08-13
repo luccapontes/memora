@@ -93,8 +93,10 @@ const TabNavigator = () => {
 const AppNavigator = () => {
   const { isAuthenticated, loading } = useAuth();
 
+  console.log('AppNavigator - isAuthenticated:', isAuthenticated, 'loading:', loading);
+
   if (loading) {
-    // You can add a loading screen here if needed
+    console.log('AppNavigator - Loading...');
     return null;
   }
 

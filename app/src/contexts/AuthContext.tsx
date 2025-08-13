@@ -33,7 +33,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
     const checkAuth = async () => {
       try {
         const savedUser = await storage.getItem('@Memora:user');
@@ -41,25 +40,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (savedUser && savedToken) {
           const userData = JSON.parse(savedUser);
-          const token = JSON.parse(savedToken);
-          
-          // Set token in API service
-          apiService.setToken(token);
-          
-          // Try to verify token with backend, but fallback to saved user if it fails
-          try {
-            const profile = await apiService.getProfile();
-            setUser(profile);
-            setIsAuthenticated(true);
-          } catch (error) {
-            // If backend is not available, use saved user data
-            console.log('Backend not available, using saved user data');
-            setUser(userData);
-            setIsAuthenticated(true);
-          }
+          setUser(userData);
+          setIsAuthenticated(true);
+          apiService.setToken(savedToken);
+          console.log('User restored from storage:', userData);
+        } else {
+          console.log('No saved user found');
         }
       } catch (error) {
-        console.log('No saved user found');
+        console.log('Error checking auth:', error);
       } finally {
         setLoading(false);
       }
@@ -69,84 +58,61 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      // Try to login with backend first
+    console.log('Attempting login with:', email);
+    
+    // Always use mock authentication for now
+    if (email === 'sofia@escola.com' && password === '123456') {
+      const mockUserData = { ...mockUser, email };
+      setUser(mockUserData);
+      setIsAuthenticated(true);
+      
+      // Save to storage
       try {
-        const response = await apiService.login(email, password);
-        
-        setUser(response.user);
-        setIsAuthenticated(true);
-        apiService.setToken(response.token);
-        
-        // Save to storage
-        await storage.setItem('@Memora:user', JSON.stringify(response.user));
-        await storage.setItem('@Memora:token', JSON.stringify(response.token));
-        
+        await storage.setItem('@Memora:user', JSON.stringify(mockUserData));
+        await storage.setItem('@Memora:token', JSON.stringify('mock-token'));
+        console.log('Login successful:', mockUserData);
         return true;
       } catch (error) {
-        // If backend is not available, use mock authentication
-        console.log('Backend not available, using mock authentication');
-        
-        // Check if credentials match mock user
-        if (email === 'sofia@escola.com' && password === '123456') {
-          const mockUserData = { ...mockUser, email };
-          setUser(mockUserData);
-          setIsAuthenticated(true);
-          
-          // Save to storage
-          await storage.setItem('@Memora:user', JSON.stringify(mockUserData));
-          await storage.setItem('@Memora:token', JSON.stringify('mock-token'));
-          
-          return true;
-        } else {
-          return false;
-        }
+        console.error('Error saving to storage:', error);
+        // Even if storage fails, still authenticate
+        setUser(mockUserData);
+        setIsAuthenticated(true);
+        return true;
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } else {
+      console.log('Invalid credentials');
       return false;
     }
   };
 
   const logout = async () => {
+    console.log('Logging out');
     setUser(null);
     setIsAuthenticated(false);
     apiService.setToken('');
-    await storage.removeItem('@Memora:user');
-    await storage.removeItem('@Memora:token');
+    try {
+      await storage.removeItem('@Memora:user');
+      await storage.removeItem('@Memora:token');
+    } catch (error) {
+      console.error('Error removing from storage:', error);
+    }
   };
 
   const register = async (userData: Partial<User>): Promise<boolean> => {
     try {
-      // Try to register with backend first
-      try {
-        const response = await apiService.register(userData);
-        
-        setUser(response.user);
-        setIsAuthenticated(true);
-        apiService.setToken(response.token);
-        
-        await storage.setItem('@Memora:user', JSON.stringify(response.user));
-        await storage.setItem('@Memora:token', JSON.stringify(response.token));
-        
-        return true;
-      } catch (error) {
-        // If backend is not available, create mock user
-        console.log('Backend not available, creating mock user');
-        
-        const newUser = {
-          id: Date.now().toString(),
-          ...userData,
-        } as User;
-        
-        setUser(newUser);
-        setIsAuthenticated(true);
-        
-        await storage.setItem('@Memora:user', JSON.stringify(newUser));
-        await storage.setItem('@Memora:token', JSON.stringify('mock-token'));
-        
-        return true;
-      }
+      const newUser = {
+        ...mockUser,
+        id: Date.now().toString(),
+        ...userData,
+      } as User;
+      
+      setUser(newUser);
+      setIsAuthenticated(true);
+      
+      await storage.setItem('@Memora:user', JSON.stringify(newUser));
+      await storage.setItem('@Memora:token', JSON.stringify('mock-token'));
+      
+      return true;
     } catch (error) {
       console.error('Register error:', error);
       return false;

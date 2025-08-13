@@ -45,15 +45,19 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    console.log('LoginScreen - Attempting login with:', data.email);
     setIsLoading(true);
     try {
       const success = await login(data.email, data.password);
+      console.log('LoginScreen - Login result:', success);
       if (success) {
+        console.log('LoginScreen - Navigating to MainTabs');
         navigation.navigate('MainTabs');
       } else {
         Alert.alert('Erro', 'E-mail ou senha incorretos');
       }
     } catch (error) {
+      console.error('LoginScreen - Login error:', error);
       Alert.alert('Erro', 'Ocorreu um erro ao fazer login');
     } finally {
       setIsLoading(false);
