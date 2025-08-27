@@ -11,6 +11,16 @@ app.use('/usuarios', usuarioRoutes);
 const authRoutes = require('./routes/auth');
 app.use('/auth', authRoutes);
 
+const resumoRoutes = require('./routes/resumos');
+app.use('/resumos', resumoRoutes);
+
+const quizRoutes = require('./routes/quizzes');
+app.use('/quizzes', quizRoutes);
+
+const respostaQuizRoutes = require('./routes/respostas');
+app.use('/respostas-quizzes', respostaQuizRoutes);
+
+
 initModels();
 
 app.get('/', (req, res) => {
