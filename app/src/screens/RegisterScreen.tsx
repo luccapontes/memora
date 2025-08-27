@@ -8,6 +8,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Dimensions,
+  StatusBar,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +17,7 @@ import * as yup from 'yup';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/Button';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface RegisterFormData {
   fullName: string;
@@ -39,6 +42,8 @@ const schema = yup.object({
 interface RegisterScreenProps {
   navigation: any;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const { register } = useAuth();
@@ -69,275 +74,351 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Header with Illustration */}
-      <View style={styles.header}>
-        <View style={styles.illustration}>
-          <View style={styles.illustrationPlaceholder}>
-            <Ionicons name="people" size={48} color="white" />
+    <LinearGradient
+      colors={['#667eea', '#764ba2']}
+      style={styles.gradientContainer}
+    >
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <SafeAreaView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.logoContainer}>
+            <View style={styles.logoBackground}>
+              <Ionicons name="people" size={50} color="white" />
+            </View>
+            <Text style={styles.logoText}>Memora</Text>
+            <Text style={styles.tagline}>Junte-se à nossa comunidade</Text>
           </View>
         </View>
-      </View>
 
-      {/* Form */}
-      <ScrollView style={styles.formContainer} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Bem-vindo ao Memora!</Text>
-        <Text style={styles.subtitle}>
-          Para começar, precisamos de algumas informações suas.
-        </Text>
-
-        <Controller
-          control={control}
-          name="fullName"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Nome completo"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                />
-              </View>
-              {errors.fullName && <Text style={styles.errorText}>{errors.fullName.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="mail-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="E-mail escolar"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </View>
-              {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="cpf"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="card-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="CPF"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  keyboardType="numeric"
-                />
-              </View>
-              {errors.cpf && <Text style={styles.errorText}>{errors.cpf.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="birthDate"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="calendar-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Data de nascimento"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                />
-              </View>
-              {errors.birthDate && <Text style={styles.errorText}>{errors.birthDate.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="class"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="school-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Turma"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                />
-              </View>
-              {errors.class && <Text style={styles.errorText}>{errors.class.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Senha"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </View>
-              {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
-            </View>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="confirmPassword"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
-                <Ionicons name="lock-closed-outline" size={20} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Confirmar senha"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  secureTextEntry
-                  autoCapitalize="none"
-                />
-              </View>
-              {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
-            </View>
-          )}
-        />
-
-        <View style={styles.buttonContainer}>
-          <Button
-            title={isLoading ? 'Criando conta...' : 'Próximo'}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isLoading}
-            style={styles.button}
-          />
-        </View>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-          style={styles.loginLink}
+        {/* Scrollable Content */}
+        <ScrollView 
+          style={styles.scrollContainer} 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.loginText}>
-            Já tem uma conta? <Text style={styles.loginTextBold}>Faça login</Text>
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Form Card */}
+          <View style={styles.formCard}>
+            <Text style={styles.formTitle}>Bem-vindo ao Memora!</Text>
+            <Text style={styles.formSubtitle}>
+              Para começar, precisamos de algumas informações suas.
+            </Text>
+
+            <View style={styles.formContainer}>
+              <Controller
+                control={control}
+                name="fullName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="person-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Nome completo"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                      />
+                    </View>
+                    {errors.fullName && <Text style={styles.errorText}>{errors.fullName.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="mail-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="E-mail escolar"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                    </View>
+                    {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="cpf"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="card-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="CPF"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    {errors.cpf && <Text style={styles.errorText}>{errors.cpf.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="birthDate"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="calendar-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Data de nascimento"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                      />
+                    </View>
+                    {errors.birthDate && <Text style={styles.errorText}>{errors.birthDate.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="class"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="school-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Turma"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                      />
+                    </View>
+                    {errors.class && <Text style={styles.errorText}>{errors.class.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="lock-closed-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Senha"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        secureTextEntry
+                        autoCapitalize="none"
+                      />
+                    </View>
+                    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+                  </View>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="confirmPassword"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="lock-closed-outline" size={22} color="#667eea" style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Confirmar senha"
+                        placeholderTextColor="#999"
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        secureTextEntry
+                        autoCapitalize="none"
+                      />
+                    </View>
+                    {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>}
+                  </View>
+                )}
+              />
+            </View>
+          </View>
+
+          {/* Action Section */}
+          <View style={styles.actionSection}>
+            <Button
+              title={isLoading ? 'Criando conta...' : 'Criar conta'}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isLoading}
+              style={styles.button}
+            />
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Login')}
+              style={styles.loginLink}
+            >
+              <Text style={styles.loginText}>
+                Já tem uma conta? <Text style={styles.loginTextBold}>Faça login</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   header: {
-    height: 200,
-    backgroundColor: '#2F4F4F',
-    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: height * 0.06,
+    paddingBottom: height * 0.04,
+  },
+  logoContainer: {
     alignItems: 'center',
   },
-  illustration: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  illustrationPlaceholder: {
-    width: 120,
-    height: 120,
+  logoBackground: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  logoText: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  tagline: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  formCard: {
+    backgroundColor: 'white',
+    marginHorizontal: 24,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    elevation: 15,
+    marginBottom: 20,
+  },
+  formTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  formSubtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 24,
   },
   formContainer: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 8,
+  scrollContainer: {
+    flex: 1,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 32,
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 40,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: 16,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#000',
+    color: '#333',
+    fontWeight: '500',
   },
   errorText: {
     color: '#FF6B6B',
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: 13,
+    marginTop: 6,
     marginLeft: 4,
+    fontWeight: '500',
   },
-  buttonContainer: {
-    marginTop: 24,
+  actionSection: {
+    marginHorizontal: 24,
     marginBottom: 20,
   },
   button: {
     width: '100%',
+    marginBottom: 20,
   },
   loginLink: {
     alignItems: 'center',
-    marginBottom: 40,
+    paddingVertical: 8,
   },
   loginText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#666',
   },
   loginTextBold: {
-    color: '#4A90E2',
+    color: '#667eea',
     fontWeight: 'bold',
   },
 }); 
