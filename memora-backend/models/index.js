@@ -2,7 +2,7 @@ const sequelize = require('../config/db');
 const Usuario = require('./Usuario');
 const Resumo = require('./Resumo');
 const Quiz = require('./Quiz');
-const RespostaQuiz = require('./respostas_quiz');
+const RespostaQuiz = require('./RespostaQuiz');
 const PerguntaQuiz = require('./PerguntaQuiz');
 
 const initModels = async () => {

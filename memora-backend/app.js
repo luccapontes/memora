@@ -18,7 +18,7 @@ const quizRoutes = require('./routes/quizzes');
 app.use('/quizzes', quizRoutes);
 
 const respostaQuizRoutes = require('./routes/respostas');
-app.use('/respostas-quizzes', respostaQuizRoutes);
+app.use('/respostaquiz', respostaQuizRoutes);
 
 
 initModels();

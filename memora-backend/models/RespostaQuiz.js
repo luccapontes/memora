@@ -19,15 +19,15 @@ const RespostaQuiz = sequelize.define('RespostaQuiz', {
     type: DataTypes.JSON,
     allowNull: false
   },
-  acertos: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
   nota: {
     type: DataTypes.FLOAT,
     allowNull: false
   },
-  respondido_em: {
+  acertos: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  criado_em: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   }
